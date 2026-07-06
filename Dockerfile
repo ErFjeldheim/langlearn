@@ -9,6 +9,8 @@ RUN npm ci --omit=dev=false
 # --- build ---
 FROM node:20-alpine AS build
 WORKDIR /app
+ARG NEXT_PUBLIC_PB_URL
+ENV NEXT_PUBLIC_PB_URL=$NEXT_PUBLIC_PB_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1

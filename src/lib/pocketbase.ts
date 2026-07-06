@@ -6,10 +6,7 @@ let _pb: PocketBase | null = null;
 
 export function pb(): PocketBase {
   if (!_pb) {
-    const url = process.env.NEXT_PUBLIC_PB_URL;
-    if (!url) {
-      throw new Error("NEXT_PUBLIC_PB_URL is not set");
-    }
+    const url = process.env.NEXT_PUBLIC_PB_URL || "https://pb-langlearn.fjelldata.com";
     _pb = new PocketBase(url);
     _pb.autoCancellation(false);
   }
