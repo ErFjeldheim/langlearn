@@ -26,8 +26,8 @@ export default function LessonChatClient({ lesson }: { lesson: Lesson }) {
         role: r.role === "user" ? "user" : "assistant",
         content: r.content,
       }));
-      // If no saved history, start with the lesson opener (handled in LessonChat).
-      setInitialHistory(history.length ? history : undefined);
+      // If no saved history, start with empty array (lesson opener handled in LessonChat).
+      setInitialHistory(history);
       setPrevCount(history.length);
       ensureVocabFromLesson(lesson.id, lesson.vocab);
       touchLesson(lesson.id);
