@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LangLearn — Profe Sofía
 
-## Getting Started
+A1 Mexican Spanish speaking-practice PWA. Talk to **Profe Sofía**, a teacher from Monterrey, to get ready for an exchange semester at Tec de Monterrey.
 
-First, run the development server:
+- **Frontend**: Next.js 16 (App Router) + TypeScript + Tailwind v4
+- **LLM**: Groq `llama-3.3-70b-versatile` (free tier) via server-side proxy
+- **Speech**: Browser Web Speech API (STT `es-MX` + TTS `es-MX`); Groq Whisper `whisper-large-v3-turbo` fallback endpoint at `/api/transcribe`
+- **Data**: Pocketbase (auth, conversation history, SRS vocabulary, progress)
+- **Deploy**: Dokploy (standalone Docker build)
+
+## Local development
 
 ```bash
+cp .env.example .env
+# fill in GROQ_API_KEY and NEXT_PUBLIC_PB_URL
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pocketbase setup (one-time)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a Pocketbase instance (e.g. via a Dokploy compose service), set the env below, and run:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+PB_URL=https://pb-langlearn.<your-domain> \
+PB_ADMIN_EMAIL=admin@example.com \
+PB_ADMIN_PASSWORD=<admin-pw> \
+LL_USER_EMAIL=erik@example.com \
+LL_USER_PASSWORD=<user-pw> \
+npm run setup:pb
+```
 
-## Learn More
+This creates the `vocabulary`, `conversations`, and `progress` collections (owner-scoped API rules) and the single user account.
 
-To learn more about Next.js, take a look at the following resources:
+## Curriculum
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+25 A1 lessons, Monterrey-exchange flavored, in `src/lib/curriculum.ts`. Day 25 is a pre-flight mixed review.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment (Dokploy)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The `Dockerfile` produces a `node:20-alpine` image running the Next.js standalone server on port 3000. Configure env vars in Dokploy and attach the domain.
