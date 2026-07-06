@@ -1,0 +1,77 @@
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e12]:
+    - main [ref=e13]:
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - paragraph [ref=e16]: Profe Sofía · A1 Español Mexicano
+          - heading "¡Hola, Erik! 👋" [level=1] [ref=e17]
+          - paragraph [ref=e18]: 25 días para tu vuelo a Monterrey.
+        - 'link "Siguiente lección Día 1: ¿Qué onda? — Greetings Greetings and basic politeness (Mexican informal) Empezar →" [ref=e19] [cursor=pointer]':
+          - /url: /lessons/greetings
+          - paragraph [ref=e20]: Siguiente lección
+          - paragraph [ref=e21]: "Día 1: ¿Qué onda? — Greetings"
+          - paragraph [ref=e22]: Greetings and basic politeness (Mexican informal)
+          - paragraph [ref=e23]: Empezar →
+        - generic [ref=e24]:
+          - generic [ref=e25]:
+            - paragraph [ref=e26]: 0/25
+            - paragraph [ref=e27]: Lecciones
+          - generic [ref=e28]:
+            - paragraph [ref=e29]: "0"
+            - paragraph [ref=e30]: XP
+          - generic [ref=e31]:
+            - paragraph [ref=e32]: "0"
+            - paragraph [ref=e33]: Repaso
+        - generic [ref=e34]:
+          - heading "Tu camino" [level=2] [ref=e35]
+          - generic [ref=e36]:
+            - link "Día 1 · ¿Qué onda? — Greetings →" [ref=e37] [cursor=pointer]:
+              - /url: /lessons/greetings
+              - generic [ref=e38]:
+                - generic [ref=e39]: Día 1 ·
+                - text: ¿Qué onda? — Greetings
+              - generic [ref=e40]: →
+            - link "Día 2 · Adiós — Goodbyes and see you later →" [ref=e41] [cursor=pointer]:
+              - /url: /lessons/goodbyes-time
+              - generic [ref=e42]:
+                - generic [ref=e43]: Día 2 ·
+                - text: Adiós — Goodbyes and see you later
+              - generic [ref=e44]: →
+            - link "Día 3 · Números 0–20 →" [ref=e45] [cursor=pointer]:
+              - /url: /lessons/numbers-0-20
+              - generic [ref=e46]:
+                - generic [ref=e47]: Día 3 ·
+                - text: Números 0–20
+              - generic [ref=e48]: →
+            - link "Día 4 · Números 20–100 →" [ref=e49] [cursor=pointer]:
+              - /url: /lessons/numbers-20-100
+              - generic [ref=e50]:
+                - generic [ref=e51]: Día 4 ·
+                - text: Números 20–100
+              - generic [ref=e52]: →
+            - link "Día 5 · Soy estudiante — Introducing yourself →" [ref=e53] [cursor=pointer]:
+              - /url: /lessons/i-am-student
+              - generic [ref=e54]:
+                - generic [ref=e55]: Día 5 ·
+                - text: Soy estudiante — Introducing yourself
+              - generic [ref=e56]: →
+            - link "Día 6 · Voy a Monterrey — Travel plans →" [ref=e57] [cursor=pointer]:
+              - /url: /lessons/going-to-mty
+              - generic [ref=e58]:
+                - generic [ref=e59]: Día 6 ·
+                - text: Voy a Monterrey — Travel plans
+              - generic [ref=e60]: →
+          - link "Ver las 25 lecciones" [ref=e61] [cursor=pointer]:
+            - /url: /lessons
+    - navigation [ref=e62]:
+      - generic [ref=e63]:
+        - link "Inicio" [ref=e64] [cursor=pointer]:
+          - /url: /
+        - link "Lecciones" [ref=e65] [cursor=pointer]:
+          - /url: /lessons
+        - link "Repaso" [ref=e66] [cursor=pointer]:
+          - /url: /review
+      - generic [ref=e67]:
+        - text: erik@fjelldata.com ·
+        - button "salir" [ref=e68] [cursor=pointer]

@@ -15,7 +15,7 @@ export async function loadHistory(lessonId: string, limit = 30): Promise<Convers
   try {
     const recs = await pb().collection("conversations").getFullList({
       filter: `owner = "${uid()}" && lesson_id = "${lessonId}"`,
-      sort: "created,-created",
+      sort: "-created",
     });
     // getFullList returns desc by -created; we want chronological. sort then reverse.
     const sorted = (recs as unknown as ConversationRecord[]).sort(
