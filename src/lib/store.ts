@@ -137,7 +137,7 @@ export async function loadDueVocab(): Promise<VocabRecord[]> {
     })) as unknown as VocabRecord[];
     const now = new Date();
     return all.filter((v) => {
-      const due = v.srs_due ? new Date(v.srs_due + "T00:00:00Z") : new Date(0);
+      const due = v.srs_due ? new Date(v.srs_due) : new Date(0);
       return due <= now;
     });
   } catch (err) {
