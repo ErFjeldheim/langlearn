@@ -38,6 +38,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
   const recRef = useRef<{ stop: () => void } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const speakingQueueRef = useRef<string>("");
+  const fullTextRef = useRef<string>("");
 
   // Load a Mexican voice lazily (voices list may arrive async).
   useEffect(() => {
@@ -78,6 +79,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
       setInterim("");
       setLoading(true);
       setStreaming("");
+      fullTextRef.current = "";
 
       try {
         const res = await fetch("/api/chat", {
@@ -95,6 +97,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
         await readSSE(res.body, {
           onDelta: (token) => {
             setStreaming((prev) => prev + token);
+            fullTextRef.current += token;
             // Buffer text and speak sentence-by-sentence as they complete.
             speakingQueueRef.current += token;
             const sentences = splitIntoSentences(speakingQueueRef.current);
@@ -109,7 +112,8 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
             }
           },
           onDone: () => {
-            const finalText = speakingQueueRef.current;
+            const finalText = fullTextRef.current;
+            fullTextRef.current = "";
             speakingQueueRef.current = "";
             setStreaming("");
             if (finalText.trim()) {
