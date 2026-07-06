@@ -15,12 +15,13 @@ export async function loadHistory(lessonId: string, limit = 30): Promise<Convers
   try {
     const recs = await pb().collection("conversations").getFullList({
       filter: `owner = "${uid()}" && lesson_id = "${lessonId}"`,
-      sort: "-created",
     });
-    // getFullList returns desc by -created; we want chronological. sort then reverse.
-    const sorted = (recs as unknown as ConversationRecord[]).sort(
-      (a, b) => +new Date(a.created) - +new Date(b.created)
-    );
+    // Pocketbase returns in insertion order (chronological); sort by created if present.
+    const sorted = (recs as unknown as ConversationRecord[]).sort((a, b) => {
+      const ta = a.created ? +new Date(a.created) : 0;
+      const tb = b.created ? +new Date(b.created) : 0;
+      return ta - tb;
+    });
     return sorted.slice(-limit);
   } catch (err) {
     console.warn("loadHistory failed", err);
