@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# opencode config (contains MCP server credentials)
+.opencode/opencode.json
+opencode.json
