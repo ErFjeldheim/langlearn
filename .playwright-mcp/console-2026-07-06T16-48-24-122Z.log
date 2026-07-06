@@ -1,5 +1,0 @@
-[  205146ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://pb-langlearn.fjelldata.com/api/collections/conversations/records?page=1&perPage=1000&skipTotal=1&filter=owner%20%3D%20%22h9k1h4lmla8cknt%22%20%26%26%20lesson_id%20%3D%20%22greetings%22&sort=created%2C-created:0
-[  205147ms] [WARNING] loadHistory failed ClientResponseError 400: Something went wrong while processing your request.
-    at https://langlearn.fjelldata.com/_next/static/chunks/40zutdj8e9dkg.js:1:35998
-    at async o (https://langlearn.fjelldata.com/_next/static/chunks/24rrzw3lklemx.js:1:341)
-    at async https://langlearn.fjelldata.com/_next/static/chunks/1n6uj79tx7eha.js:6:6347 @ https://langlearn.fjelldata.com/_next/static/chunks/24rrzw3lklemx.js:0

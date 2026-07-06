@@ -1,8 +1,0 @@
-- generic [active] [ref=e1]:
-  - alert [ref=e2]
-  - main [ref=e13]:
-    - generic [ref=e69]:
-      - generic [ref=e70]: Cargando lección…
-      - link "Volver a las lecciones" [ref=e71] [cursor=pointer]:
-        - /url: /lessons
-        - text: Volver
