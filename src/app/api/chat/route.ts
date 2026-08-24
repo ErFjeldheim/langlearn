@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { streamGroqCompletion, type ChatMessage } from "@/lib/groq";
+import { streamXaiCompletion, type ChatMessage } from "@/lib/xai";
 import { TEACHER_SYSTEM_PROMPT } from "@/lib/teacher";
 
 export const runtime = "nodejs";
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         );
       };
       try {
-        for await (const token of streamGroqCompletion({
+        for await (const token of streamXaiCompletion({
           messages,
           temperature: 0.7,
           signal: request.signal,
