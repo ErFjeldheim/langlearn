@@ -25,7 +25,6 @@ export async function* streamOpenCodeCompletion(
 ): AsyncGenerator<string, void, unknown> {
   const { apiKey, model: defaultModel } = getOpenCodeConfig();
   const model = params.model || defaultModel;
-  const temperature = params.temperature ?? 0.7;
 
   const res = await fetch("https://opencode.ai/zen/go/v1/responses", {
     method: "POST",
@@ -37,7 +36,6 @@ export async function* streamOpenCodeCompletion(
     body: JSON.stringify({
       model,
       input: params.messages,
-      temperature,
       max_output_tokens: 512,
       stream: true,
     }),
