@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { streamXaiCompletion, type ChatMessage } from "@/lib/xai";
+import { streamOpenCodeCompletion, type ChatMessage } from "@/lib/opencode-go";
 import { TEACHER_SYSTEM_PROMPT } from "@/lib/teacher";
 
 export const runtime = "nodejs";
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         );
       };
       try {
-        for await (const token of streamXaiCompletion({
+        for await (const token of streamOpenCodeCompletion({
           messages,
           temperature: 0.7,
           signal: request.signal,

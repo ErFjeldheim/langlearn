@@ -9,25 +9,25 @@ export type ChatParams = {
   signal?: AbortSignal;
 };
 
-const DEFAULT_XAI_MODEL = "grok-4.6";
+const DEFAULT_OPENCODE_MODEL = "gpt-5.6-luna";
 
-export function getXaiConfig() {
-  const apiKey = process.env.XAI_API_KEY;
-  const model = process.env.XAI_MODEL || DEFAULT_XAI_MODEL;
+export function getOpenCodeConfig() {
+  const apiKey = process.env.OPENCODE_API_KEY;
+  const model = process.env.OPENCODE_MODEL || DEFAULT_OPENCODE_MODEL;
   if (!apiKey) {
-    throw new Error("XAI_API_KEY is not set on the server");
+    throw new Error("OPENCODE_API_KEY is not set on the server");
   }
   return { apiKey, model };
 }
 
-export async function* streamXaiCompletion(
+export async function* streamOpenCodeCompletion(
   params: ChatParams
 ): AsyncGenerator<string, void, unknown> {
-  const { apiKey, model: defaultModel } = getXaiConfig();
+  const { apiKey, model: defaultModel } = getOpenCodeConfig();
   const model = params.model || defaultModel;
   const temperature = params.temperature ?? 0.7;
 
-  const res = await fetch("https://api.x.ai/v1/chat/completions", {
+  const res = await fetch("https://opencode.ai/zen/go/v1/responses", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -36,16 +36,16 @@ export async function* streamXaiCompletion(
     signal: params.signal,
     body: JSON.stringify({
       model,
-      messages: params.messages,
+      input: params.messages,
       temperature,
-      max_tokens: 512,
+      max_output_tokens: 512,
       stream: true,
     }),
   });
 
   if (!res.ok || !res.body) {
     const text = await res.text().catch(() => "");
-    throw new Error(`xAI error ${res.status}: ${text.slice(0, 500)}`);
+    throw new Error(`OpenCode Go error ${res.status}: ${text.slice(0, 500)}`);
   }
 
   const reader = res.body.getReader();
@@ -56,18 +56,19 @@ export async function* streamXaiCompletion(
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
-    buffer = lines.pop() || "";
-    for (const line of lines) {
-      const trimmed = line.trim();
-      if (!trimmed || !trimmed.startsWith("data:")) continue;
-      const data = trimmed.slice(5).trim();
-      if (data === "[DONE]") return;
+    const events = buffer.split("\n\n");
+    buffer = events.pop() || "";
+    for (const event of events) {
+      const data = event
+        .split("\n")
+        .find((line) => line.startsWith("data:"))
+        ?.slice(5)
+        .trim();
+      if (!data || data === "[DONE]") continue;
       try {
         const json = JSON.parse(data);
-        const delta = json.choices?.[0]?.delta?.content;
-        if (typeof delta === "string" && delta.length) {
-          yield delta;
+        if (json.type === "response.output_text.delta" && typeof json.delta === "string") {
+          yield json.delta;
         }
       } catch {
         // Ignore malformed events so a partial stream can continue.
