@@ -9,9 +9,16 @@ export type ChatParams = {
   signal?: AbortSignal;
 };
 
+const DEFAULT_GROQ_MODEL = "openai/gpt-oss-120b";
+const RETIRED_GROQ_MODEL = "llama-3.3-70b-versatile";
+
 export function getGroqConfig() {
   const apiKey = process.env.GROQ_API_KEY;
-  const model = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+  const configuredModel = process.env.GROQ_MODEL;
+  const model =
+    configuredModel && configuredModel !== RETIRED_GROQ_MODEL
+      ? configuredModel
+      : DEFAULT_GROQ_MODEL;
   if (!apiKey) {
     throw new Error("GROQ_API_KEY is not set on the server");
   }

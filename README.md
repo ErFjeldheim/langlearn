@@ -3,7 +3,7 @@
 A1 Mexican Spanish speaking-practice PWA. Talk to **Profe Sofía**, a teacher from Monterrey, to get ready for an exchange semester at Tec de Monterrey.
 
 - **Frontend**: Next.js 16 (App Router) + TypeScript + Tailwind v4
-- **LLM**: Groq `llama-3.3-70b-versatile` (free tier) via server-side proxy
+- **LLM**: Groq `openai/gpt-oss-120b` (free tier) via server-side proxy
 - **Speech**: Browser Web Speech API (STT `es-MX` + TTS `es-MX`); Groq Whisper `whisper-large-v3-turbo` fallback endpoint at `/api/transcribe`
 - **Data**: Pocketbase (auth, conversation history, SRS vocabulary, progress)
 - **Deploy**: Dokploy (standalone Docker build)
