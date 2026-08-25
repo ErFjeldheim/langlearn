@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 export const metadata: Metadata = {
   title: "LangLearn — Profe Sofía",
   description:
-    "A1 Mexican Spanish speaking practice with Profe Sofía, your tutor from Monterrey.",
+    "A1 Mexican Spanish speaking practice with Profe Sofía, your tutor from Querétaro.",
   applicationName: "LangLearn",
   manifest: "/manifest.webmanifest",
   appleWebApp: {

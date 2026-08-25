@@ -34,7 +34,7 @@ export default function HomePage() {
         </p>
         <h1 className="mt-1 text-2xl font-semibold">¡Hola, Erik! 👋</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {daysLeft} días para tu vuelo a Monterrey.
+          {daysLeft} días para tu vuelo a Querétaro.
         </p>
       </header>
 

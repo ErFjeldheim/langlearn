@@ -1,6 +1,6 @@
 # LangLearn — Profe Sofía
 
-A1 Mexican Spanish speaking-practice PWA. Talk to **Profe Sofía**, a teacher from Monterrey, to get ready for an exchange semester at Tec de Monterrey.
+A1 Mexican Spanish speaking-practice PWA. Talk to **Profe Sofía**, a teacher from Querétaro, to get ready for an exchange semester at Tec de Monterrey, Campus Querétaro.
 
 - **Frontend**: Next.js 16 (App Router) + TypeScript + Tailwind v4
 - **LLM**: OpenCode Go `gpt-5.6-luna` via server-side proxy
@@ -35,7 +35,7 @@ This creates the `vocabulary`, `conversations`, and `progress` collections (owne
 
 ## Curriculum
 
-25 A1 lessons, Monterrey-exchange flavored, in `src/lib/curriculum.ts`. Day 25 is a pre-flight mixed review.
+25 A1 lessons, Querétaro-exchange flavored, in `src/lib/curriculum.ts`. Day 25 is a pre-flight mixed review.
 
 ## Deployment (Dokploy)
 

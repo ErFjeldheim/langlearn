@@ -95,17 +95,17 @@ export const CURRICULUM: Lesson[] = [
   {
     id: "going-to-mty",
     day: 6,
-    title: "Voy a Monterrey — Travel plans",
+    title: "Voy a Querétaro — Travel plans",
     topic: "Going to, future with 'ir a'",
     objectives: ["Say where you are going", "Use 'ir a + place'", "Mention Tec de Monterrey"],
     vocab: [
-      { term: "voy a Monterrey", translation: "I am going to Monterrey" },
+      { term: "voy a Querétaro", translation: "I am going to Querétaro" },
       { term: "en avión", translation: "by plane" },
       { term: "la universidad", translation: "the university" },
       { term: "el Tecnológico de Monterrey", translation: "Tec de Monterrey" },
     ],
     opener: "¿A dónde vas, Erik? ¿Y cómo?",
-    drillPhrase: "Voy a Monterrey en avión, al Tecnológico de Monterrey",
+    drillPhrase: "Voy a Querétaro en avión, al Tecnológico de Monterrey",
   },
   {
     id: "at-airport",
@@ -120,7 +120,7 @@ export const CURRICULUM: Lesson[] = [
       { term: "las maletas", translation: "the suitcases" },
       { term: "acabo de llegar", translation: "I just arrived" },
     ],
-    opener: "Estás en el aeropuerto de Monterrey. Necesitas la salida. ¿Qué preguntas?",
+    opener: "Estás en el aeropuerto de Querétaro. Necesitas la salida. ¿Qué preguntas?",
     drillPhrase: "¿Dónde está la salida para los taxis?",
   },
   {
@@ -180,7 +180,7 @@ export const CURRICULUM: Lesson[] = [
       { term: "una agua fresca", translation: "a fresh fruit water" },
       { term: "la cuenta, por favor", translation: "the bill, please" },
     ],
-    opener: "Estás en una taquería en Monterrey. ¿Qué vas a pedir?",
+    opener: "Estás en una taquería en Querétaro. ¿Qué vas a pedir?",
     drillPhrase: "Unos tacos de pastor y una agua fresca, por favor",
   },
   {
@@ -276,7 +276,7 @@ export const CURRICULUM: Lesson[] = [
   {
     id: "weather",
     day: 18,
-    title: "El clima en Monterrey",
+    title: "El clima en Querétaro",
     topic: "Weather, hot/cold, 'hace calor'",
     objectives: ["Describe the weather", "Say it is hot/cold", "Ask about the weather"],
     vocab: [
@@ -285,7 +285,7 @@ export const CURRICULUM: Lesson[] = [
       { term: "hace sol", translation: "it is sunny" },
       { term: "llueve", translation: "it rains" },
     ],
-    opener: "Monterrey hace mucho calor. Erik, ¿qué tiempo hace hoy?",
+    opener: "En Querétaro hace calor. Erik, ¿qué tiempo hace hoy?",
     drillPhrase: "Hace mucho calor y sol",
   },
   {
@@ -345,7 +345,7 @@ export const CURRICULUM: Lesson[] = [
       { term: "la regla", translation: "the rule" },
       { term: "la casa", translation: "the house" },
     ],
-    opener: "Llegas con tu familia anfitriona en Monterrey. Saluda y pregunta una regla de la casa.",
+    opener: "Llegas con tu familia anfitriona en Querétaro. Saluda y pregunta una regla de la casa.",
     drillPhrase: "Hola, mucho gusto. ¿En qué puedo ayudar?",
   },
   {
@@ -389,14 +389,14 @@ export const CURRICULUM: Lesson[] = [
       "Ask for help and directions",
     ],
     vocab: [
-      { term: "voy a Monterrey", translation: "I am going to Monterrey" },
+      { term: "voy a Querétaro", translation: "I am going to Querétaro" },
       { term: "soy estudiante del Tec", translation: "I am a student at Tec" },
       { term: "¿dónde está...?", translation: "where is...?" },
       { term: "¿cuánto cuesta?", translation: "how much?" },
     ],
     opener:
-      "Erik, mañana es tu vuelo. Imagina desde el aeropuerto de Trondheim hasta una taquería en Monterrey. Preséntate conmigo, completa: 'Hola, me llamo Erik, voy a...'",
-    drillPhrase: "Hola, me llamo Erik, voy a estudiar al Tec de Monterrey",
+      "Erik, mañana es tu vuelo. Imagina desde el aeropuerto de Trondheim hasta una taquería en Querétaro. Preséntate conmigo, completa: 'Hola, me llamo Erik, voy a...'",
+    drillPhrase: "Hola, me llamo Erik, voy a estudiar al Tec de Monterrey, Campus Querétaro",
   },
 ];
 
