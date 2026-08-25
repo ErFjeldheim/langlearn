@@ -13,16 +13,16 @@ Prioritized backlog based on retrieval practice, spaced repetition, deliberate p
 
 ## High Impact
 
-- [x] Replace turn-count completion with objective checklist confirmation.
-- [x] Automatically verify objective evidence in learner responses.
+- [x] Replace turn-count completion with objective evidence checks.
+- [x] Automatically verify target-language evidence in learner responses.
 - [x] Add explicit correction and retry guidance to the tutor.
 - [ ] Make correction and retry state machine-enforced rather than prompt-guided.
-- [ ] Integrate SRS with lesson objectives and skill-level performance.
+- [ ] Integrate SRS with lesson objectives and server-backed skill performance.
 - [x] Add controlled lesson progression and deliberate recycling of older vocabulary.
 
 ## Medium Impact
 
-- [ ] Improve pronunciation and listening practice with intelligibility feedback.
+- [ ] Add true pronunciation/intelligibility analysis; browser speech recognition only provides a rough transcript.
 - [x] Add local retention metrics for review accuracy.
 - [x] Add visible persistence-error states.
 - [ ] Add server-backed accuracy and weak-skill metrics.
