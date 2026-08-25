@@ -4,6 +4,13 @@ import { pb, type ConversationRecord, type ProgressRecord, type VocabRecord } fr
 import { freshSRS, review, type SRSGrade, type SRSState } from "@/lib/srs";
 import type { Vocab } from "@/lib/curriculum";
 
+function notifyStoreError(operation: string, err: unknown) {
+  console.warn(`${operation} failed`, err);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("langlearn:store-error", { detail: operation }));
+  }
+}
+
 function uid(): string {
   const auth = pb().authStore.record;
   if (!auth?.id) throw new Error("not-authed");
@@ -24,7 +31,7 @@ export async function loadHistory(lessonId: string, limit = 30): Promise<Convers
     });
     return sorted.slice(-limit);
   } catch (err) {
-    console.warn("loadHistory failed", err);
+    notifyStoreError("No se pudo cargar la conversación", err);
     return [];
   }
 }
@@ -38,7 +45,7 @@ export async function saveTurn(lessonId: string, role: "user" | "assistant", con
       content,
     });
   } catch (err) {
-    console.warn("saveTurn failed", err);
+    notifyStoreError("No se pudo guardar la conversación", err);
   }
 }
 
@@ -49,7 +56,7 @@ export async function loadProgress(): Promise<ProgressRecord[]> {
       filter: `owner = "${uid()}"`,
     })) as unknown as ProgressRecord[];
   } catch (err) {
-    console.warn("loadProgress failed", err);
+    notifyStoreError("No se pudo cargar tu progreso", err);
     return [];
   }
 }
@@ -75,7 +82,7 @@ export async function markLessonComplete(lessonId: string, xp: number) {
       });
     }
   } catch (err) {
-    console.warn("markLessonComplete failed", err);
+    notifyStoreError("No se pudo guardar la lección", err);
   }
 }
 
@@ -98,7 +105,7 @@ export async function touchLesson(lessonId: string) {
       });
     }
   } catch (err) {
-    console.warn("touchLesson failed", err);
+    notifyStoreError("No se pudo actualizar la lección", err);
   }
 }
 
@@ -125,7 +132,7 @@ export async function ensureVocabFromLesson(lessonId: string, vocab: Vocab[]) {
       });
     }
   } catch (err) {
-    console.warn("ensureVocabFromLesson failed", err);
+    notifyStoreError("No se pudo preparar el vocabulario", err);
   }
 }
 
@@ -141,7 +148,7 @@ export async function loadDueVocab(): Promise<VocabRecord[]> {
       return due <= now;
     });
   } catch (err) {
-    console.warn("loadDueVocab failed", err);
+    notifyStoreError("No se pudo cargar el repaso", err);
     return [];
   }
 }
@@ -162,7 +169,7 @@ export async function gradeVocab(record: VocabRecord, grade: SRSGrade): Promise<
       srs_due: next.due,
     });
   } catch (err) {
-    console.warn("gradeVocab persist failed", err);
+    notifyStoreError("No se pudo guardar la calificación", err);
   }
   return next;
 }

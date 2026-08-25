@@ -126,7 +126,11 @@ export function startRecognition(handlers: RecognitionHandlers): {
 // Split streamed text into spoken sentences and queue TTS utterances.
 export function speak(
   text: string,
-  opts?: { onBoundary?: (spoken: number, total: number) => void; onDone?: () => void }
+  opts?: {
+    rate?: number;
+    onBoundary?: (spoken: number, total: number) => void;
+    onDone?: () => void;
+  }
 ): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
@@ -145,7 +149,7 @@ export function speak(
     const u = new SpeechSynthesisUtterance(chunks[idx]);
     u.lang = "es-MX";
     if (voice) u.voice = voice;
-    u.rate = 0.95;
+    u.rate = opts?.rate ?? 0.95;
     u.pitch = 1;
     const current = idx;
     idx += 1;

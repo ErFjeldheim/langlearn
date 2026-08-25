@@ -5,11 +5,13 @@ import { loadDueVocab, gradeVocab } from "@/lib/store";
 import type { VocabRecord } from "@/lib/pocketbase";
 import { pickMexicanVoice, waitForVoices } from "@/lib/speech";
 import type { SRSGrade } from "@/lib/srs";
+import { recordReview } from "@/lib/learning-stats";
 
 export default function ReviewPage() {
   const [queue, setQueue] = useState<VocabRecord[]>([]);
   const [index, setIndex] = useState(0);
-  const [revealed, setRevealed] = useState(false);
+  const [answer, setAnswer] = useState("");
+  const [checked, setChecked] = useState(false);
   const [loading, setLoading] = useState(true);
   const [voiceReady, setVoiceReady] = useState(false);
   const [synthOk, setSynthOk] = useState(true);
@@ -25,6 +27,12 @@ export default function ReviewPage() {
   }, []);
 
   const card = queue[index];
+  const spanishPrompt = index % 2 === 0;
+  const prompt = card && (spanishPrompt ? card.translation : card.term);
+  const expected = card && (spanishPrompt ? card.term : card.translation);
+  const answerIsCorrect =
+    !!expected &&
+    splitAcceptedAnswers(expected).some((value) => normalizeAnswer(answer) === value);
 
   function speakTerm(text: string) {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
@@ -39,9 +47,19 @@ export default function ReviewPage() {
 
   async function grade(g: SRSGrade) {
     if (!card) return;
+    recordReview(answerIsCorrect);
     await gradeVocab(card, g);
-    setRevealed(false);
+    if (g === "again") {
+      setQueue((current) => [...current, card]);
+    }
+    setAnswer("");
+    setChecked(false);
     setIndex((i) => i + 1);
+  }
+
+  function checkAnswer() {
+    if (!answer.trim()) return;
+    setChecked(true);
   }
 
   if (loading) {
@@ -75,40 +93,65 @@ export default function ReviewPage() {
 
       <div className="rounded-2xl border border-border bg-card p-6 text-center">
         <p className="text-xs uppercase tracking-wide text-muted-foreground">
-          Palabra
+          {spanishPrompt ? "Traduce al español" : "¿Qué significa?"}
         </p>
-        <p className="mt-2 text-3xl font-semibold">{card.term}</p>
-        <button
-          onClick={() => speakTerm(card.term)}
-          disabled={!synthOk}
-          className="mt-3 rounded-full border border-border px-3 py-1 text-xs disabled:opacity-40"
-        >
-          🔊 Escuchar
-        </button>
+        <p className="mt-2 text-3xl font-semibold">{prompt}</p>
+        {!spanishPrompt && (
+          <button
+            onClick={() => speakTerm(card.term)}
+            disabled={!synthOk}
+            className="mt-3 rounded-full border border-border px-3 py-1 text-xs disabled:opacity-40"
+          >
+            🔊 Escuchar
+          </button>
+        )}
 
-        {revealed ? (
-          <div className="mt-5 border-t border-border pt-4">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground">
-              Traducción
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            checkAnswer();
+          }}
+          className="mt-5 flex gap-2"
+        >
+          <input
+            value={answer}
+            onChange={(event) => setAnswer(event.target.value)}
+            disabled={checked}
+            autoFocus
+            placeholder={spanishPrompt ? "Escribe en español…" : "Escribe el significado…"}
+            className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary disabled:opacity-60"
+          />
+          <button
+            type="submit"
+            disabled={checked || !answer.trim()}
+            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-40"
+          >
+            Comprobar
+          </button>
+        </form>
+
+        {checked && (
+          <div className="mt-4 border-t border-border pt-4">
+            <p className={`font-medium ${answerIsCorrect ? "text-emerald-300" : "text-amber-300"}`}>
+              {answerIsCorrect ? "¡Correcto!" : `Respuesta: ${expected}`}
             </p>
-            <p className="mt-1 text-lg text-foreground">{card.translation}</p>
             {card.example && (
-              <p className="mt-2 text-sm italic text-muted-foreground">
-                {card.example}
-              </p>
+              <p className="mt-2 text-sm italic text-muted-foreground">{card.example}</p>
             )}
           </div>
-        ) : (
-          <button
-            onClick={() => setRevealed(true)}
-            className="mt-5 rounded-lg border border-border px-4 py-2 text-sm"
-          >
-            Mostrar traducción
-          </button>
         )}
       </div>
 
-      {revealed && (
+      {!checked && (
+        <button
+          onClick={() => setChecked(true)}
+          className="mt-3 block w-full text-center text-xs text-muted-foreground underline"
+        >
+          No sé, mostrar respuesta
+        </button>
+      )}
+
+      {checked && (
         <div className="mt-4 grid grid-cols-4 gap-2">
           <GradeBtn label="Otra vez" tone="red" onClick={() => grade("again")} />
           <GradeBtn label="Difícil" tone="amber" onClick={() => grade("hard")} />
@@ -123,6 +166,19 @@ export default function ReviewPage() {
       )}
     </div>
   );
+}
+
+function normalizeAnswer(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[¿?¡!.,]/g, "")
+    .trim();
+}
+
+function splitAcceptedAnswers(value: string): string[] {
+  return value.split(/\s*\/\s*/).map(normalizeAnswer);
 }
 
 function GradeBtn({

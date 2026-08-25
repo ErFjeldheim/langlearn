@@ -5,10 +5,12 @@ import { useEffect, useState } from "react";
 import { CURRICULUM } from "@/lib/curriculum";
 import { loadDueVocab, loadProgress } from "@/lib/store";
 import type { ProgressRecord, VocabRecord } from "@/lib/pocketbase";
+import { getLearningStats, type LearningStats } from "@/lib/learning-stats";
 
 export default function HomePage() {
   const [progress, setProgress] = useState<ProgressRecord[]>([]);
   const [due, setDue] = useState<VocabRecord[]>([]);
+  const [stats, setStats] = useState<LearningStats>({ reviewed: 0, correct: 0 });
   const daysLeft = (() => {
     if (typeof window === "undefined") return 25;
     const target = new Date();
@@ -19,6 +21,8 @@ export default function HomePage() {
   useEffect(() => {
     loadProgress().then(setProgress);
     loadDueVocab().then(setDue);
+    const timer = window.setTimeout(() => setStats(getLearningStats()));
+    return () => window.clearTimeout(timer);
   }, []);
 
   const completed = new Set(progress.filter((p) => p.completed).map((p) => p.lesson_id));
@@ -48,10 +52,14 @@ export default function HomePage() {
         <p className="mt-3 text-sm font-medium text-primary">Empezar →</p>
       </Link>
 
-      <section className="mt-6 grid grid-cols-3 gap-3">
+      <section className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Stat label="Lecciones" value={`${completed.size}/${CURRICULUM.length}`} />
         <Stat label="XP" value={String(totalXp)} />
         <Stat label="Repaso" value={String(due.length)} />
+        <Stat
+          label="Retención"
+          value={stats.reviewed ? `${Math.round((stats.correct / stats.reviewed) * 100)}%` : "—"}
+        />
       </section>
 
       {due.length > 0 && (

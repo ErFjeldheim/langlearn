@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { type Lesson } from "@/lib/curriculum";
+import { CURRICULUM, grammarFocus, type Lesson } from "@/lib/curriculum";
 import {
   detectSupport,
   speak,
@@ -34,6 +34,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
   const [support, setSupport] = useState(detectSupport());
   const [voiceReady, setVoiceReady] = useState(false);
   const [autoSpeak, setAutoSpeak] = useState(true);
+  const [slowSpeech, setSlowSpeech] = useState(false);
 
   const recRef = useRef<{ stop: () => void } | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -107,7 +108,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
               speakingQueueRef.current = sentences[sentences.length - 1];
               if (autoSpeak && support.synthesis && !speaking) {
                 setSpeaking(true);
-                speak(complete, { onDone: () => setSpeaking(false) });
+                speak(complete, { rate: slowSpeech ? 0.7 : 0.95, onDone: () => setSpeaking(false) });
               }
             }
           },
@@ -121,7 +122,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
               setMessages((prev) => [...prev, fullAssistant]);
               if (autoSpeak && support.synthesis && !speaking) {
                 setSpeaking(true);
-                speak(finalText, { onDone: () => setSpeaking(false) });
+                speak(finalText, { rate: slowSpeech ? 0.7 : 0.95, onDone: () => setSpeaking(false) });
               }
             }
             setLoading(false);
@@ -138,7 +139,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
         setStreaming("");
       }
     },
-    [messages, loading, lesson, autoSpeak, support.synthesis, speaking]
+    [messages, loading, lesson, autoSpeak, slowSpeech, support.synthesis, speaking]
   );
 
   const toggleMic = useCallback(() => {
@@ -219,6 +220,17 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
           </button>
           <button
             type="button"
+            onClick={() => setSlowSpeech((v) => !v)}
+            className={`rounded-md border border-border px-2.5 py-1.5 text-xs ${
+              slowSpeech ? "bg-primary text-primary-foreground" : "bg-transparent"
+            }`}
+            aria-pressed={slowSpeech}
+            title="Hablar más despacio"
+          >
+            Lenta
+          </button>
+          <button
+            type="button"
             onClick={stopAll}
             className="rounded-md border border-border px-2.5 py-1.5 text-xs"
           >
@@ -229,7 +241,12 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {displayMessages.map((m, i) => (
-          <Bubble key={i} role={m.role} content={m.content} />
+          <Bubble
+            key={i}
+            role={m.role}
+            content={m.content}
+            onReplay={m.role === "assistant" ? () => speak(m.content, { rate: slowSpeech ? 0.7 : 0.95 }) : undefined}
+          />
         ))}
         {interim && (
           <Bubble role="user" content={interim} muted />
@@ -291,10 +308,12 @@ function Bubble({
   role,
   content,
   muted,
+  onReplay,
 }: {
   role: "user" | "assistant";
   content: string;
   muted?: boolean;
+  onReplay?: () => void;
 }) {
   const isUser = role === "user";
   return (
@@ -309,8 +328,13 @@ function Bubble({
         }`}
       >
         {!isUser && (
-          <div className="mb-0.5 text-[0.7rem] font-medium uppercase tracking-wide text-primary">
-            Profe Sofía
+          <div className="mb-0.5 flex items-center justify-between gap-2 text-[0.7rem] font-medium uppercase tracking-wide text-primary">
+            <span>Profe Sofía</span>
+            {onReplay && (
+              <button type="button" onClick={onReplay} className="normal-case tracking-normal underline">
+                Repetir
+              </button>
+            )}
           </div>
         )}
         <p className="whitespace-pre-wrap">{content}</p>
@@ -378,11 +402,21 @@ function buildLessonContextString(lesson: Lesson): string {
   const vocabList = lesson.vocab
     .map((v) => `  - ${v.term} (${v.translation})`)
     .join("\n");
+  const previousVocabulary = CURRICULUM
+    .filter((candidate) => candidate.day < lesson.day)
+    .flatMap((candidate) => candidate.vocab)
+    .slice(-3)
+    .map((v) => `${v.term} (${v.translation})`)
+    .join(", ");
+  const recycling = previousVocabulary
+    ? `\nRecycle these earlier words naturally when appropriate: ${previousVocabulary}`
+    : "";
   return `CURRENT LESSON (Day ${lesson.day}): ${lesson.title}
 Topic: ${lesson.topic}
+Grammar focus: ${grammarFocus(lesson.day)}
 Objectives: ${lesson.objectives.join("; ")}
 Target vocabulary for this lesson (use these naturally, gloss each only on first use):
-${vocabList}
+${vocabList}${recycling}
 Open and continue the lesson naturally in Spanish. Short turns, one question at a time.`;
 }
 

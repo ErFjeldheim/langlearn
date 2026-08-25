@@ -10,6 +10,20 @@ export type Lesson = {
   drillPhrase: string;
 };
 
+export function grammarFocus(day: number): string {
+  if (day <= 2) return "Greetings, names, and basic question patterns";
+  if (day <= 5) return "ser, subject pronouns, articles, and noun gender";
+  if (day <= 8) return "ir a + place, dónde, and simple questions";
+  if (day <= 10) return "present-tense routines and time expressions";
+  if (day <= 14) return "quiero, necesito, quantities, and polite requests";
+  if (day <= 16) return "hay, es/está, and classroom questions";
+  if (day <= 18) return "tener, hacer, and weather expressions";
+  if (day <= 20) return "possessives, negation, and me gusta";
+  if (day <= 22) return "present-tense verbs and simple connectors";
+  if (day <= 24) return "imperatives, vamos a, and survival phrases";
+  return "Integrated review of high-frequency sentence frames";
+}
+
 export const CURRICULUM: Lesson[] = [
   {
     id: "greetings",

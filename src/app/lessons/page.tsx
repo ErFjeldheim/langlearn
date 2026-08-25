@@ -32,11 +32,19 @@ export default function LessonsPage() {
         {CURRICULUM.map((l) => {
           const done = completed.has(l.id);
           const pr = practiced.get(l.id);
+          const previous = CURRICULUM[l.day - 2];
+          const locked = !!previous && !completed.has(previous.id);
           return (
             <li key={l.id}>
               <Link
-                href={`/lessons/${l.id}`}
-                className={`flex items-start gap-3 rounded-xl border p-4 transition hover:border-primary ${
+                href={locked ? "#" : `/lessons/${l.id}`}
+                aria-disabled={locked}
+                onClick={(event) => {
+                  if (locked) event.preventDefault();
+                }}
+                className={`flex items-start gap-3 rounded-xl border p-4 transition ${
+                  locked ? "cursor-not-allowed opacity-50" : "hover:border-primary"
+                } ${
                   done ? "border-primary/30 bg-primary/5" : "border-border bg-card"
                 }`}
               >
@@ -56,6 +64,7 @@ export default function LessonsPage() {
                     {new Date(pr.last_practiced).toLocaleDateString("es-MX", { day: "numeric", month: "short" })}
                   </span>
                 )}
+                {locked && <span className="text-xs text-muted-foreground">Bloqueada</span>}
               </Link>
             </li>
           );
