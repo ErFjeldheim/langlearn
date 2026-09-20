@@ -9,6 +9,7 @@ type Body = {
   messages: ChatMessage[];
   lessonContext?: string;
   drillContext?: string;
+  sessionId?: string;
 };
 
 export async function POST(request: NextRequest) {
@@ -45,6 +46,7 @@ export async function POST(request: NextRequest) {
           messages,
           temperature: 0.7,
           signal: request.signal,
+          sessionId: body.sessionId,
         })) {
           send("delta", JSON.stringify({ token }));
         }

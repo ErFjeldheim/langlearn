@@ -40,6 +40,7 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
   const scrollRef = useRef<HTMLDivElement>(null);
   const speakingQueueRef = useRef<string>("");
   const fullTextRef = useRef<string>("");
+  const sessionIdRef = useRef<string>("");
 
   // Load a Mexican voice lazily (voices list may arrive async).
   useEffect(() => {
@@ -83,12 +84,16 @@ export default function LessonChat({ lesson, initialHistory, onHistoryChange }: 
       fullTextRef.current = "";
 
       try {
+        if (!sessionIdRef.current) {
+          sessionIdRef.current = crypto.randomUUID();
+        }
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
             lessonContext: buildLessonContextString(lesson),
+            sessionId: sessionIdRef.current,
           }),
         });
         if (!res.ok || !res.body) {

@@ -7,6 +7,7 @@ export type ChatParams = {
   model?: string;
   temperature?: number;
   signal?: AbortSignal;
+  sessionId?: string;
 };
 
 const DEFAULT_OPENCODE_MODEL = "gpt-5.6-luna";
@@ -31,6 +32,8 @@ export async function* streamOpenCodeCompletion(
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      "User-Agent": "LangLearn/1.0",
+      "x-opencode-session": params.sessionId || crypto.randomUUID(),
     },
     signal: params.signal,
     body: JSON.stringify({
