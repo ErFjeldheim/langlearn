@@ -32,7 +32,7 @@ const collections = [
     updateRule: ownerRule,
     deleteRule: ownerRule,
     fields: [
-      { name: "owner", type: "relation", required: true, cascadeDelete: true, collectionId: "_pb_users_auth_" },
+      { name: "owner", type: "relation", required: true, cascadeDelete: true, maxSelect: 1, collectionId: "_pb_users_auth_" },
       { name: "term", type: "text", required: true, options: { max: 120 } },
       { name: "translation", type: "text", required: true, options: { max: 200 } },
       { name: "example", type: "text", required: false, options: { max: 400 } },
@@ -52,7 +52,7 @@ const collections = [
     updateRule: ownerRule,
     deleteRule: ownerRule,
     fields: [
-      { name: "owner", type: "relation", required: true, cascadeDelete: true, collectionId: "_pb_users_auth_" },
+      { name: "owner", type: "relation", required: true, cascadeDelete: true, maxSelect: 1, collectionId: "_pb_users_auth_" },
       { name: "lesson_id", type: "text", required: true, options: { max: 60 } },
       { name: "role", type: "text", required: true, options: { max: 20 } },
       { name: "content", type: "text", required: true, options: { max: 8000 } },
@@ -67,7 +67,7 @@ const collections = [
     updateRule: ownerRule,
     deleteRule: ownerRule,
     fields: [
-      { name: "owner", type: "relation", required: true, cascadeDelete: true, collectionId: "_pb_users_auth_" },
+      { name: "owner", type: "relation", required: true, cascadeDelete: true, maxSelect: 1, collectionId: "_pb_users_auth_" },
       { name: "lesson_id", type: "text", required: true, options: { max: 60 } },
       { name: "completed", type: "bool", required: false },
       { name: "xp", type: "number", required: false },

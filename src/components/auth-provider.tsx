@@ -19,23 +19,62 @@ const Ctx = createContext<AuthCtx>({
   logout: () => {},
 });
 
+const TOKEN_REFRESH_INTERVAL_MS = 60 * 60 * 1000;
+
+function clearStaleSession() {
+  pb().authStore.clear();
+  if (typeof window !== "undefined") {
+    window.localStorage.removeItem("langlearn_auth");
+  }
+}
+
+async function refreshSession(): Promise<AuthUser | null> {
+  const client = pb();
+  if (!client.authStore.isValid) return null;
+  try {
+    const record = await client.collection("users").authRefresh();
+    const r = record.record as unknown as { id: string; email: string; name?: string };
+    return { id: r.id, email: r.email, name: r.name };
+  } catch {
+    clearStaleSession();
+    return null;
+  }
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // One-time client restore of persisted auth (localStorage is a sync
-    // external store); setState here is the canonical mount-restore pattern.
-    if (typeof window === "undefined") return;
-    const stored = window.localStorage.getItem("langlearn_auth");
-    if (stored) {
-      try {
-        const u = JSON.parse(stored) as AuthUser;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setUser(u);
-      } catch {}
-    }
-    setLoading(false);
+    let cancelled = false;
+    (async () => {
+      if (typeof window !== "undefined") {
+        const stored = window.localStorage.getItem("langlearn_auth");
+        if (stored) {
+          try {
+            const u = JSON.parse(stored) as AuthUser;
+            setUser(u);
+          } catch {}
+        }
+      }
+      // Validate the PocketBase session token: expired tokens keep the UI
+      // "logged in" while every write fails with a generic 400.
+      const validated = await refreshSession();
+      if (cancelled) return;
+      setUser(validated);
+      if (validated && typeof window !== "undefined") {
+        window.localStorage.setItem("langlearn_auth", JSON.stringify(validated));
+      }
+      setLoading(false);
+    })();
+    const timer = window.setInterval(async () => {
+      const validated = await refreshSession();
+      if (!cancelled) setUser(validated);
+    }, TOKEN_REFRESH_INTERVAL_MS);
+    return () => {
+      cancelled = true;
+      window.clearInterval(timer);
+    };
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
